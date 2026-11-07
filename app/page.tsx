@@ -1,8 +1,9 @@
+import Navbar from "@/components/shared/Navbar";
 
 export default function Page() {
   return (
     <div>
-      This is Homepage
+      <Navbar></Navbar>
     </div>
   )
 }
