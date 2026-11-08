@@ -57,7 +57,7 @@ const Navbar = () => {
             Sign In
           </Link>
 
-          <Link href="/get-started">
+          <Link href="/signup">
             <Button className="group relative h-11 overflow-hidden rounded-xl border border-indigo-400/20 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-6 text-[13px] font-semibold text-white shadow-[0_4px_25px_rgba(99,102,241,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_35px_rgba(139,92,246,0.35)]">
               <span className="absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-[120%]" />
 
@@ -123,7 +123,7 @@ const Navbar = () => {
                 Sign In
               </Link>
 
-              <Link href="/get-started" onClick={() => setIsOpen(false)}>
+              <Link href="/signup" onClick={() => setIsOpen(false)}>
                 <Button className="h-12 w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-violet-500">
                   Get Started
                   <ArrowUpRight size={17} className="ml-2" />
