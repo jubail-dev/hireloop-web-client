@@ -1,35 +1,26 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  ArrowUpRight,
-  Menu,
-  X,
-  Sparkles,
-} from "lucide-react";
-import logo from "@/app/images/logo.png";
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { ArrowUpRight, Menu, X, Sparkles } from "lucide-react"
+import logo from "@/app/images/logo.png"
 
 const navLinks = [
   { name: "Browse Jobs", href: "/jobs" },
   { name: "Company", href: "/company" },
   { name: "Pricing", href: "/pricing" },
-];
+]
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-[#08080b]/85 px-4 py-4 backdrop-blur-2xl sm:px-6">
       <nav className="mx-auto flex max-w-7xl items-center justify-between">
-
         {/* Logo */}
-        <Link
-          href="/"
-          className="group relative flex shrink-0 items-center"
-        >
+        <Link href="/" className="group relative flex shrink-0 items-center">
           <Image
             src={logo}
             alt="HireLoop Logo"
@@ -42,7 +33,6 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-10 lg:flex">
-
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -54,12 +44,10 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 h-[2px] w-0 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-
         </div>
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-5 lg:flex">
-
           <div className="h-5 w-px bg-white/10" />
 
           <Link
@@ -71,7 +59,6 @@ const Navbar = () => {
 
           <Link href="/get-started">
             <Button className="group relative h-11 overflow-hidden rounded-xl border border-indigo-400/20 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-6 text-[13px] font-semibold text-white shadow-[0_4px_25px_rgba(99,102,241,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_35px_rgba(139,92,246,0.35)]">
-
               <span className="absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-[120%]" />
 
               <span className="relative flex items-center gap-2">
@@ -81,10 +68,8 @@ const Navbar = () => {
                   className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
               </span>
-
             </Button>
           </Link>
-
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -96,24 +81,20 @@ const Navbar = () => {
         >
           {isOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
-
       </nav>
 
       {/* Mobile Navigation */}
       <div
         className={`grid transition-all duration-300 ease-in-out lg:hidden ${
-          isOpen
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0"
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
         <div className="overflow-hidden">
           <div className="mt-4 rounded-2xl border border-white/[0.08] bg-[#111116] p-5 shadow-2xl">
-
             {/* Mobile Brand Label */}
             <div className="mb-4 flex items-center gap-2 border-b border-white/[0.07] pb-4">
               <Sparkles size={15} className="text-violet-400" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              <span className="text-[10px] font-semibold tracking-[0.2em] text-zinc-500 uppercase">
                 Explore HireLoop
               </span>
             </div>
@@ -142,10 +123,7 @@ const Navbar = () => {
                 Sign In
               </Link>
 
-              <Link
-                href="/get-started"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/get-started" onClick={() => setIsOpen(false)}>
                 <Button className="h-12 w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-violet-500">
                   Get Started
                   <ArrowUpRight size={17} className="ml-2" />
@@ -156,13 +134,11 @@ const Navbar = () => {
             <p className="mt-5 text-center text-[10px] tracking-wide text-zinc-600">
               Find opportunities. Build your future.
             </p>
-
           </div>
         </div>
       </div>
-
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
