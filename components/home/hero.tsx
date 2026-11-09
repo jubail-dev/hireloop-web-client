@@ -1,184 +1,221 @@
-"use client"
 
-import Image from "next/image"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Briefcase, Search, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import globe from "@/app/images/globe.png"
-import adobe from "@/app/images/logos/adobe.png"
-import airbnb from "@/app/images/logos/airbnb.png"
-import amazon from "@/app/images/logos/amazon.png"
-import apple from "@/app/images/logos/apple.png"
-import google from "@/app/images/logos/google.png"
-import meta from "@/app/images/logos/meta.png"
-import microsoft from "@/app/images/logos/microsoft.png"
-import netflix from "@/app/images/logos/netflix.png"
-import nvidia from "@/app/images/logos/nvidia.png"
-import spotify from "@/app/images/logos/spotify.png"
-import tesla from "@/app/images/logos/tesla.png"
-import uber from "@/app/images/logos/uber.png"
+"use client";
 
-const companyLogos = [
-  { name: "Google", src: google },
-  { name: "Apple", src: apple },
-  { name: "Microsoft", src: microsoft },
-  { name: "Meta", src: meta },
-  { name: "Amazon", src: amazon },
-  { name: "Netflix", src: netflix },
-  { name: "Tesla", src: tesla },
-  { name: "Uber", src: uber },
-  { name: "Airbnb", src: airbnb },
-  { name: "Spotify", src: spotify },
-  { name: "Nvidia", src: nvidia },
-  { name: "Adobe", src: adobe },
-]
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Search,
+  MapPin,
+  ArrowUpRight,
+  BriefcaseBusiness,
+  Building2,
+  Users,
+} from "lucide-react";
+
+const popularSearches = [
+  "Frontend Developer",
+  "UI/UX Designer",
+  "Full Stack",
+  "Product Manager",
+];
 
 const stats = [
-  { value: "12,400+", label: "Active Jobs" },
-  { value: "2,300+", label: "Companies" },
-  { value: "89,000+", label: "Job Seekers" },
-  { value: "98%", label: "Satisfaction Rate" },
-]
-
-const fadeInUp = (delay: number) => ({
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const },
-})
+  { value: "50K+", label: "Open Opportunities", icon: BriefcaseBusiness },
+  { value: "8.5K+", label: "Trusted Companies", icon: Building2 },
+  { value: "15K+", label: "Career Success Stories", icon: Users },
+];
 
 const Hero = () => {
+  const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams();
+
+    if (query.trim()) params.set("search", query.trim());
+    if (location.trim()) params.set("location", location.trim());
+
+    window.location.href = `/jobs?${params.toString()}`;
+  };
+
   return (
-    <section className="relative isolate overflow-hidden bg-[#08080b]">
-      {/* Background: purple glow + starfield + planet horizon */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 top-0 z-0 flex justify-center"
-      >
-        <Image
-          src={globe}
-          alt=""
-          priority
-          className="h-auto w-full max-w-none min-w-[1200px] object-cover"
-        />
-        {/* Blend the planet's dark base into the page background */}
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#08080b] to-transparent" />
+    <section className="relative isolate min-h-screen overflow-hidden bg-[#08090d] text-white">
+
+      {/* Subtle Background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-[-300px] h-[650px] w-[850px] -translate-x-1/2 rounded-full bg-indigo-500/[0.09] blur-[150px]" />
+
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#08090d_85%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-4 pt-36 pb-10 text-center sm:px-6 sm:pt-40">
-        {/* Eyebrow badge */}
-        <motion.div {...fadeInUp(0)}>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-zinc-300 shadow-[0_0_25px_rgba(168,85,247,0.15)] backdrop-blur-md">
-            <Sparkles size={14} className="text-fuchsia-400" />
-            2,300+ companies are hiring right now
+      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-5 pb-16 pt-32 text-center sm:px-8 lg:pt-36">
+
+        {/* Eyebrow */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mb-10"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 text-xs font-medium tracking-wide text-gray-300 backdrop-blur-xl">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            The future of finding work
+            <ArrowUpRight size={13} className="text-gray-500" />
           </span>
         </motion.div>
 
-        {/* Headline */}
-        <motion.h1
-          {...fadeInUp(0.1)}
-          className="mt-7 max-w-4xl text-5xl leading-[1.05] font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
-        >
-          Find opportunities.
-          <span className="mt-2 block bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text pb-2 text-transparent">
-            Build your future.
-          </span>
-        </motion.h1>
-
-        {/* Subheadline */}
-        <motion.p
-          {...fadeInUp(0.2)}
-          className="mt-6 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg sm:leading-8"
-        >
-          HireLoop brings smart job search, salary insights, and one-click
-          applications into a single platform — connecting ambitious talent with
-          top companies around the world.
-        </motion.p>
-
-        {/* CTAs */}
+        {/* Main Heading */}
         <motion.div
-          {...fadeInUp(0.3)}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.1 }}
+          className="max-w-5xl"
         >
-          <Button
-            render={<Link href="/jobs" />}
-            nativeButton={false}
-            className="h-12 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-7 text-sm font-semibold text-white shadow-[0_4px_25px_rgba(99,102,241,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_35px_rgba(139,92,246,0.5)]"
-          >
-            <Search size={17} className="mr-2" />
-            Search Jobs
-          </Button>
+          <h1 className="text-[48px] font-semibold leading-[1.08] tracking-[-0.065em] sm:text-7xl md:text-8xl lg:text-[104px]">
+            Find your next
+            <br />
 
-          <Button
-            render={<Link href="/dashboard/recruiter/jobs/new" />}
-            nativeButton={false}
-            className="h-12 rounded-xl border border-white/[0.1] bg-white/[0.04] px-7 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-400/30 hover:bg-white/[0.08] hover:shadow-[0_8px_30px_rgba(217,70,239,0.2)]"
-          >
-            <Briefcase size={17} className="mr-2" />
-            Post a Job
-          </Button>
-        </motion.div>
+            <span className="bg-gradient-to-r from-white via-[#c7c9ff] to-[#8985f5] bg-clip-text text-transparent">
+              opportunity.
+            </span>
+          </h1>
 
-        {/* Live stats */}
-        <motion.dl
-          {...fadeInUp(0.4)}
-          className="mt-16 grid w-full max-w-4xl grid-cols-2 gap-x-6 gap-y-8 sm:mt-20 md:grid-cols-4"
-        >
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-center gap-1.5"
-            >
-              <dt className="order-2 text-[11px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">
-                {stat.label}
-              </dt>
-              <dd className="order-1 bg-gradient-to-b from-white to-indigo-300/80 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
-                {stat.value}
-              </dd>
-            </div>
-          ))}
-        </motion.dl>
-
-        {/* Featured companies marquee */}
-        <motion.div
-          {...fadeInUp(0.5)}
-          className="mt-auto w-full max-w-5xl pt-16"
-        >
-          <p className="text-[10px] font-semibold tracking-[0.25em] text-zinc-600 uppercase">
-            Featured companies hiring on HireLoop
+          <p className="mx-auto mt-8 max-w-xl text-sm leading-7 text-gray-400 sm:text-base sm:leading-8">
+            Great careers begin with great opportunities.
+            Explore meaningful jobs, discover exceptional companies,
+            and make your next move.
           </p>
-
-          <div className="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]">
-            <motion.div
-              className="flex w-max"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
-            >
-              {[0, 1].map((copy) => (
-                <div
-                  key={copy}
-                  aria-hidden={copy === 1}
-                  className="flex min-w-full items-center justify-around"
-                >
-                  {companyLogos.map((logo) => (
-                    <Image
-                      key={`${copy}-${logo.name}`}
-                      src={logo.src}
-                      alt={copy === 1 ? "" : logo.name}
-                      title={logo.name}
-                      width={96}
-                      height={30}
-                      className="h-6 w-auto object-contain opacity-50 transition-opacity duration-300 hover:opacity-90 sm:h-7"
-                    />
-                  ))}
-                </div>
-              ))}
-            </motion.div>
-          </div>
         </motion.div>
+
+        {/* Search Interface */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="mt-12 w-full max-w-4xl"
+        >
+          <form
+            onSubmit={handleSearch}
+            className="rounded-2xl border border-white/[0.12] bg-[#15161c]/90 p-2 shadow-[0_25px_100px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-300 focus-within:border-indigo-400/40 sm:rounded-[22px] sm:p-3"
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:items-center">
+
+              {/* Search Input */}
+              <div className="flex flex-1 items-center gap-3 rounded-xl px-4 py-4 text-left transition-colors hover:bg-white/[0.025]">
+                <Search size={21} className="shrink-0 text-gray-400" />
+
+                <div className="min-w-0 flex-1">
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.15em] text-gray-500">
+                    What are you looking for?
+                  </label>
+
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Job title, skills or keywords"
+                    className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-600"
+                  />
+                </div>
+              </div>
+
+              <div className="hidden h-10 w-px bg-white/10 md:block" />
+
+              {/* Location Input */}
+              <div className="flex flex-1 items-center gap-3 rounded-xl px-4 py-4 text-left transition-colors hover:bg-white/[0.025]">
+                <MapPin size={21} className="shrink-0 text-gray-400" />
+
+                <div className="min-w-0 flex-1">
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.15em] text-gray-500">
+                    Location
+                  </label>
+
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="City, country or remote"
+                    className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-600"
+                  />
+                </div>
+              </div>
+
+              {/* Search Button */}
+              <button
+                type="submit"
+                className="flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 text-sm font-semibold text-black transition-all duration-300 hover:bg-indigo-100"
+              >
+                Explore Jobs
+                <ArrowUpRight size={17} />
+              </button>
+            </div>
+          </form>
+        </motion.div>
+
+        {/* Popular Searches */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="mt-7 flex max-w-3xl flex-wrap items-center justify-center gap-2.5"
+        >
+          <span className="mr-1 text-xs text-gray-500">
+            Popular searches
+          </span>
+
+          {popularSearches.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => setQuery(tag)}
+              className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3.5 py-2 text-xs text-gray-400 transition-all duration-300 hover:border-white/25 hover:bg-white/[0.07] hover:text-white"
+            >
+              {tag}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Statistics */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.65 }}
+          className="mt-24 grid w-full max-w-4xl grid-cols-1 gap-8 border-t border-white/[0.09] pt-10 sm:grid-cols-3"
+        >
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+
+            return (
+              <div
+                key={stat.label}
+                className="flex items-center justify-center gap-3"
+              >
+                <Icon size={19} className="text-indigo-300/80" />
+
+                <div className="text-left">
+                  <h3 className="text-xl font-semibold tracking-tight">
+                    {stat.value}
+                  </h3>
+
+                  <p className="mt-1 text-xs text-gray-500">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
+
+        {/* Footer Caption */}
+        <div className="mt-14 text-[10px] font-medium uppercase tracking-[0.3em] text-gray-600">
+          Discover more. Achieve more.
+        </div>
+
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

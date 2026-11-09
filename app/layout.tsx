@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google"
+import { Toaster } from "sonner";
+
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -31,6 +33,7 @@ export default function RootLayout({
       <body>
         <Navbar></Navbar>
         <ThemeProvider>{children}</ThemeProvider>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   )
