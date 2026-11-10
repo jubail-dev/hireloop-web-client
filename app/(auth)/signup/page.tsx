@@ -1,10 +1,9 @@
+"use client"
 
-"use client";
-
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import React, { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
 import {
   Mail,
   LockKeyhole,
@@ -18,39 +17,39 @@ import {
   Building2,
   CheckCircle2,
   ShieldCheck,
-} from "lucide-react";
-import { toast } from "sonner";
-import { signUp } from "@/lib/auth-client";
+} from "lucide-react"
+import { toast } from "sonner"
+import { signUp } from "@/lib/auth-client"
 
 const SignUpPage = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
-  const [role, setRole] = useState<"seeker" | "recruiter" | "admin">("seeker");
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [agreeTerms, setAgreeTerms] = useState(false)
+  const [role, setRole] = useState<"seeker" | "recruiter" | "admin">("seeker")
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget)
 
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(formData.entries())
 
     if (data.password !== data.confirmPassword) {
       toast.error("Passwords do not match!", {
         description: "Please make sure both passwords are identical.",
-      });
-      return;
+      })
+      return
     }
 
     if (!agreeTerms) {
-      toast.error("Please accept the Terms of Service.");
-      return;
+      toast.error("Please accept the Terms of Service.")
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const { data: resData, error } = await signUp.email({
@@ -58,32 +57,33 @@ const SignUpPage = () => {
         password: data.password as string,
         name: data.fullName as string,
         role,
-      });
+      })
 
       if (error) {
         toast.error("Account creation failed!", {
-          description: error.message || "Something went wrong. Please try again.",
-        });
-        return;
+          description:
+            error.message || "Something went wrong. Please try again.",
+        })
+        return
       }
 
       if (resData) {
         toast.success("Account created successfully!", {
           description: "Please sign in with your new account.",
-        });
+        })
 
-        router.push("/signin");
+        router.push("/signin")
       }
     } catch (error) {
-      console.error("Sign Up Error:", error);
+      console.error("Sign Up Error:", error)
 
       toast.error("Something went wrong!", {
         description: "Please try again later.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -95,27 +95,26 @@ const SignUpPage = () => {
         ease: [0.22, 1, 0.36, 1] as const,
       },
     },
-  };
+  }
 
   const roleCardClass = (selected: boolean) =>
     `relative rounded-2xl border p-4 text-left transition-all duration-300 ${
       selected
         ? "border-violet-500 bg-violet-50 shadow-[0_5px_20px_rgba(124,58,237,0.08)]"
         : "border-slate-200 bg-white hover:border-violet-200 hover:bg-slate-50"
-    }`;
+    }`
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#F8F9FC] text-[#171725]">
-
       {/* Background */}
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-violet-100/60 blur-[120px]" />
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-violet-100/60 blur-[120px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 right-0 h-[450px] w-[450px] rounded-full bg-indigo-100/60 blur-[120px]" />
+      <div className="pointer-events-none absolute right-0 -bottom-40 h-[450px] w-[450px] rounded-full bg-indigo-100/60 blur-[120px]" />
 
       {/* Back Home */}
       <Link
         href="/"
-        className="absolute left-5 top-6 z-30 flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-violet-600 sm:left-10 sm:top-8"
+        className="absolute top-6 left-5 z-30 flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-violet-600 sm:top-8 sm:left-10"
       >
         <ArrowLeft size={16} />
         Back to Home
@@ -123,7 +122,6 @@ const SignUpPage = () => {
 
       {/* Main Layout */}
       <div className="relative mx-auto grid min-h-screen w-full max-w-[1440px] items-center gap-12 px-5 py-24 sm:px-10 lg:grid-cols-2 lg:gap-16 lg:px-16 lg:py-16">
-
         {/* LEFT SIDE */}
         <motion.section
           initial="hidden"
@@ -154,7 +152,7 @@ const SignUpPage = () => {
               </span>
             </div>
 
-            <h1 className="max-w-[550px] text-[43px] font-bold leading-[1.13] tracking-[-2px] text-[#171725] sm:text-[55px] lg:text-[62px]">
+            <h1 className="max-w-[550px] text-[43px] leading-[1.13] font-bold tracking-[-2px] text-[#171725] sm:text-[55px] lg:text-[62px]">
               Build your future.
               <span className="block bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
                 Start today.
@@ -162,9 +160,8 @@ const SignUpPage = () => {
             </h1>
 
             <p className="mt-6 max-w-[430px] text-sm leading-7 text-slate-500 sm:text-base">
-              Join a growing professional community. Discover
-              opportunities, connect with companies, and take
-              control of your career journey.
+              Join a growing professional community. Discover opportunities,
+              connect with companies, and take control of your career journey.
             </p>
           </motion.div>
 
@@ -173,7 +170,7 @@ const SignUpPage = () => {
             variants={itemVariants}
             className="relative mt-12 overflow-hidden rounded-[28px] border border-violet-100 bg-gradient-to-br from-[#EEEAFE] via-[#F3F0FF] to-[#E8EDFF] p-6 sm:p-8"
           >
-            <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full border border-violet-300/40" />
+            <div className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full border border-violet-300/40" />
 
             <div className="relative z-10">
               <div className="flex items-center justify-between">
@@ -288,7 +285,6 @@ const SignUpPage = () => {
         >
           {/* Signup Card */}
           <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_25px_80px_rgba(30,30,70,0.07)] sm:p-9">
-
             {/* Heading */}
             <div className="mb-7">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
@@ -305,7 +301,6 @@ const SignUpPage = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-
               {/* Full Name */}
               <div>
                 <label className="mb-2 block text-xs font-semibold text-slate-700">
@@ -315,7 +310,7 @@ const SignUpPage = () => {
                 <div className="group relative">
                   <UserRound
                     size={17}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
+                    className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
                   />
 
                   <input
@@ -324,7 +319,7 @@ const SignUpPage = () => {
                     placeholder="Enter your full name"
                     required
                     autoComplete="name"
-                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pl-11 pr-4 text-xs text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pr-4 pl-11 text-xs text-slate-800 transition-all duration-300 outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
                   />
                 </div>
               </div>
@@ -336,7 +331,6 @@ const SignUpPage = () => {
                 </label>
 
                 <div className="grid grid-cols-2 gap-3">
-
                   {/* Job Seeker */}
                   <button
                     type="button"
@@ -347,16 +341,14 @@ const SignUpPage = () => {
                     {role === "seeker" && (
                       <CheckCircle2
                         size={17}
-                        className="absolute right-3 top-3 text-violet-600"
+                        className="absolute top-3 right-3 text-violet-600"
                       />
                     )}
 
                     <UserRound
                       size={21}
                       className={
-                        role === "seeker"
-                          ? "text-violet-600"
-                          : "text-slate-400"
+                        role === "seeker" ? "text-violet-600" : "text-slate-400"
                       }
                     />
 
@@ -379,7 +371,7 @@ const SignUpPage = () => {
                     {role === "recruiter" && (
                       <CheckCircle2
                         size={17}
-                        className="absolute right-3 top-3 text-violet-600"
+                        className="absolute top-3 right-3 text-violet-600"
                       />
                     )}
 
@@ -411,16 +403,14 @@ const SignUpPage = () => {
                     {role === "admin" && (
                       <CheckCircle2
                         size={17}
-                        className="absolute right-3 top-3 text-violet-600"
+                        className="absolute top-3 right-3 text-violet-600"
                       />
                     )}
 
                     <BriefcaseBusiness
                       size={21}
                       className={
-                        role === "admin"
-                          ? "text-violet-600"
-                          : "text-slate-400"
+                        role === "admin" ? "text-violet-600" : "text-slate-400"
                       }
                     />
 
@@ -432,7 +422,6 @@ const SignUpPage = () => {
                       Hire talented people
                     </p>
                   </button>
-
                 </div>
               </div>
 
@@ -445,7 +434,7 @@ const SignUpPage = () => {
                 <div className="group relative">
                   <Mail
                     size={17}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
+                    className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
                   />
 
                   <input
@@ -454,7 +443,7 @@ const SignUpPage = () => {
                     placeholder="you@example.com"
                     required
                     autoComplete="email"
-                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pl-11 pr-4 text-xs text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pr-4 pl-11 text-xs text-slate-800 transition-all duration-300 outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
                   />
                 </div>
               </div>
@@ -468,7 +457,7 @@ const SignUpPage = () => {
                 <div className="group relative">
                   <LockKeyhole
                     size={17}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
+                    className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
                   />
 
                   <input
@@ -478,14 +467,16 @@ const SignUpPage = () => {
                     required
                     minLength={8}
                     autoComplete="new-password"
-                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pl-11 pr-12 text-xs text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pr-12 pl-11 text-xs text-slate-800 transition-all duration-300 outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
                   />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-violet-600"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 transition-colors hover:text-violet-600"
                   >
                     {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
@@ -501,7 +492,7 @@ const SignUpPage = () => {
                 <div className="group relative">
                   <LockKeyhole
                     size={17}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
+                    className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-violet-600"
                   />
 
                   <input
@@ -511,20 +502,18 @@ const SignUpPage = () => {
                     required
                     minLength={8}
                     autoComplete="new-password"
-                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pl-11 pr-12 text-xs text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-[#FAFAFC] pr-12 pl-11 text-xs text-slate-800 transition-all duration-300 outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10"
                   />
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
-                    }
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={
                       showConfirmPassword
                         ? "Hide confirm password"
                         : "Show confirm password"
                     }
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-violet-600"
+                    className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 transition-colors hover:text-violet-600"
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={17} />
@@ -611,12 +600,23 @@ const SignUpPage = () => {
                   aria-label="Google"
                   role="img"
                 >
-                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z" />
-                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.73 7.18l7.26 5.63c4.24-3.91 7.51-9.67 7.51-17.28Z" />
-                  <path fill="#FBBC05" d="M10.54 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19Z" />
-                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.79l-7.26-5.63c-2.02 1.35-4.61 2.15-8.65 2.15-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z" />
+                  <path
+                    fill="#EA4335"
+                    d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z"
+                  />
+                  <path
+                    fill="#4285F4"
+                    d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.73 7.18l7.26 5.63c4.24-3.91 7.51-9.67 7.51-17.28Z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M10.54 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19Z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M24 48c6.48 0 11.93-2.13 15.91-5.79l-7.26-5.63c-2.02 1.35-4.61 2.15-8.65 2.15-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z"
+                  />
                 </svg>
-
                 Continue with Google
               </button>
             </form>
@@ -644,7 +644,7 @@ const SignUpPage = () => {
         </motion.section>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default SignUpPage;
+export default SignUpPage

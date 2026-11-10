@@ -19,11 +19,7 @@ import {
 import logo from "@/app/images/logo.png"
 import { useSession, signOut } from "@/lib/auth-client"
 
-const navLinks = [
-  { name: "Browse Jobs", href: "/jobs" },
-  { name: "Company", href: "/company" },
-  { name: "Pricing", href: "/pricing" },
-]
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -43,6 +39,13 @@ const Navbar = () => {
       console.error("Sign out failed:", error)
     }
   }
+
+  const navLinks = [
+  { name: "Browse Jobs", href: "/jobs" },
+  { name: "Company", href: "/company" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Dashboard", href: `/dashboard/${session?.user?.role || "seeker"}` },
+]
 
   const user = session?.user
 
@@ -157,7 +160,7 @@ const Navbar = () => {
 
                     <div className="space-y-1 py-2">
                       <Link
-                        href="/dashboard"
+                        href={`/dashboard/${session?.user?.role}`}
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:bg-white/[0.06] hover:text-white"
                       >
@@ -282,7 +285,7 @@ const Navbar = () => {
                 </div>
 
                 <Link
-                  href="/dashboard"
+                  href={`dashboard/${session?.user?.role}`}
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-zinc-300 hover:bg-white/[0.05] hover:text-white"
                 >
