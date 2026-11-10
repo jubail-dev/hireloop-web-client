@@ -1,8 +1,8 @@
 
-'use client';
+"use client"
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react"
+import { motion } from "framer-motion"
 import {
   Building2,
   MapPin,
@@ -16,62 +16,64 @@ import {
   CheckCircle2,
   CircleDollarSign,
   Send,
-} from 'lucide-react';
+} from "lucide-react"
+import { JobDataType } from "@/app/types/jobdata.types"
+import { createJob } from "@/lib/actions/jobs"
 
 const categories = [
-  'Engineering & Technology',
-  'Software Development',
-  'Web Development',
-  'Mobile App Development',
-  'Data Science & Analytics',
-  'Artificial Intelligence & ML',
-  'UI/UX & Product Design',
-  'Graphic Design & Creative',
-  'Digital Marketing',
-  'Marketing & Communications',
-  'Sales & Business Development',
-  'Product Management',
-  'Project Management',
-  'Human Resources',
-  'Finance & Accounting',
-  'Customer Support',
-  'Business & Consulting',
-  'Education & Training',
-  'Healthcare',
-  'Content Writing',
-  'Other',
-];
+  "Engineering & Technology",
+  "Software Development",
+  "Web Development",
+  "Mobile App Development",
+  "Data Science & Analytics",
+  "Artificial Intelligence & ML",
+  "UI/UX & Product Design",
+  "Graphic Design & Creative",
+  "Digital Marketing",
+  "Marketing & Communications",
+  "Sales & Business Development",
+  "Product Management",
+  "Project Management",
+  "Human Resources",
+  "Finance & Accounting",
+  "Customer Support",
+  "Business & Consulting",
+  "Education & Training",
+  "Healthcare",
+  "Content Writing",
+  "Other",
+]
 
 const jobTypes = [
-  'Full-time',
-  'Part-time',
-  'Contract',
-  'Internship',
-  'Freelance',
-];
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Internship",
+  "Freelance",
+]
 
 const inputClass =
-  'w-full h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10';
+  "w-full h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
 
 const labelClass =
-  'mb-2 block text-[13px] font-semibold text-slate-700';
+  "mb-2 block text-[13px] font-semibold text-slate-700"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 18 },
   visible: { opacity: 1, y: 0 },
-};
+}
 
-// SectionHeading must stay outside AddJobsPage.
+// Section Heading
 const SectionHeading = ({
   number,
   icon: Icon,
   title,
   description,
 }: {
-  number: string;
-  icon: React.ElementType;
-  title: string;
-  description: string;
+  number: string
+  icon: React.ElementType
+  title: string
+  description: string
 }) => {
   return (
     <div className="flex items-start gap-4 border-b border-slate-100 pb-5">
@@ -93,79 +95,109 @@ const SectionHeading = ({
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function AddJobsPage() {
+  // Initial Form Data
   const initialFormData = {
-    title: '',
-    company: '',
-    category: '',
-    jobType: '',
+    title: "",
+    company: "",
+    category: "",
+    jobType: "",
     isRemote: false,
-    location: '',
-    deadline: '',
-    minSalary: '',
-    maxSalary: '',
-    frequency: '',
-    responsibilities: '',
-    qualifications: '',
-  };
+    location: "",
+    deadline: "",
+    minSalary: "",
+    maxSalary: "",
+    frequency: "",
+    responsibilities: "",
+    qualifications: "",
+  }
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState(initialFormData)
 
+  // Handle Input Change
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Handle Form Submit
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
 
-    if (isSubmitting) return;
+    const form = e.currentTarget
 
+    // Validate Employment Type
     if (!formData.jobType) {
-      return;
+      const jobTypeInput =
+        form.querySelector<HTMLInputElement>(
+          'input[name="jobType"]'
+        )
+
+      jobTypeInput?.setCustomValidity(
+        "Please select an employment type."
+      )
+
+      jobTypeInput?.reportValidity()
+
+      return
     }
 
+    // Validate Salary
     if (
       formData.minSalary &&
       formData.maxSalary &&
       Number(formData.minSalary) > Number(formData.maxSalary)
     ) {
-      e.currentTarget
-        .querySelector<HTMLInputElement>('input[name="maxSalary"]')
-        ?.setCustomValidity(
-          'Maximum salary must be greater than or equal to minimum salary.'
-        );
+      const maxSalaryInput =
+        form.querySelector<HTMLInputElement>(
+          'input[name="maxSalary"]'
+        )
 
-      e.currentTarget.reportValidity();
+      maxSalaryInput?.setCustomValidity(
+        "Maximum salary must be greater than or equal to minimum salary."
+      )
 
-      return;
+      maxSalaryInput?.reportValidity()
+
+      return
     }
 
-    setIsSubmitting(true);
+    // Prepare Job Data
+    const jobData : JobDataType = {
+      ...formData,
+      minSalary: formData.minSalary
+        ? Number(formData.minSalary)
+        : null,
+      maxSalary: formData.maxSalary
+        ? Number(formData.maxSalary)
+        : null,
+    }
 
-    console.log('Published Job:', formData);
+    // Show Data in Console
+    console.log("Job Data:", jobData)
 
-    // Connect your API here.
-    // The form is not connected to a backend yet.
+    const result = await createJob(jobData)
 
-    setIsSubmitting(false);
-  };
+    console.log(result);
 
+
+  }
+
+  // Clear Form
   const handleClearForm = () => {
-    setFormData(initialFormData);
-  };
+    setFormData(initialFormData)
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f9fc] px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
@@ -196,8 +228,8 @@ export default function AddJobsPage() {
               </h1>
 
               <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                Find your next great hire. Create a compelling job listing
-                and connect with talented professionals.
+                Find your next great hire. Create a compelling job listing and
+                connect with talented professionals.
               </p>
             </div>
 
@@ -255,7 +287,7 @@ export default function AddJobsPage() {
                   <div className="relative">
                     <Building2
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
                     />
 
                     <input
@@ -297,7 +329,7 @@ export default function AddJobsPage() {
 
                     <ChevronDown
                       size={17}
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-slate-400"
                     />
                   </div>
                 </div>
@@ -315,16 +347,21 @@ export default function AddJobsPage() {
                       key={type}
                       type="button"
                       aria-pressed={formData.jobType === type}
-                      onClick={() =>
+                      onClick={(e) => {
+                        const input =
+                          e.currentTarget.parentElement?.nextElementSibling as HTMLInputElement | null
+
+                        input?.setCustomValidity("")
+
                         setFormData((prev) => ({
                           ...prev,
                           jobType: type,
                         }))
-                      }
+                      }}
                       className={`rounded-xl border px-3 py-3 text-xs font-semibold transition-all duration-200 ${
                         formData.jobType === type
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm'
-                          : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-slate-50'
+                          ? "border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-slate-50"
                       }`}
                     >
                       {type}
@@ -334,12 +371,12 @@ export default function AddJobsPage() {
 
                 <input
                   type="text"
+                  name="jobType"
                   value={formData.jobType}
-                  required
                   readOnly
                   tabIndex={-1}
                   aria-label="Employment type"
-                  className="pointer-events-none absolute h-px w-px opacity-0"
+                  className="absolute h-px w-px opacity-0"
                 />
               </div>
             </div>
@@ -392,12 +429,16 @@ export default function AddJobsPage() {
                     }))
                   }
                   className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-                    formData.isRemote ? 'bg-indigo-600' : 'bg-slate-300'
+                    formData.isRemote
+                      ? "bg-indigo-600"
+                      : "bg-slate-300"
                   }`}
                 >
                   <span
-                    className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
-                      formData.isRemote ? 'translate-x-5' : 'translate-x-0'
+                    className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+                      formData.isRemote
+                        ? "translate-x-5"
+                        : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -414,7 +455,7 @@ export default function AddJobsPage() {
                   <div className="relative">
                     <MapPin
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
                     />
 
                     <input
@@ -432,13 +473,14 @@ export default function AddJobsPage() {
                 {/* Application Deadline */}
                 <div>
                   <label className={labelClass}>
-                    Application Deadline <span className="text-rose-500">*</span>
+                    Application Deadline{" "}
+                    <span className="text-rose-500">*</span>
                   </label>
 
                   <div className="relative">
                     <CalendarDays
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
                     />
 
                     <input
@@ -446,7 +488,7 @@ export default function AddJobsPage() {
                       name="deadline"
                       value={formData.deadline}
                       onChange={handleInputChange}
-                      min={new Date().toISOString().split('T')[0]}
+                      min={new Date().toISOString().split("T")[0]}
                       required
                       className={`${inputClass} pl-11`}
                     />
@@ -480,7 +522,7 @@ export default function AddJobsPage() {
                       value={formData.minSalary}
                       onChange={handleInputChange}
                       min="0"
-                      placeholder="e.g. 25"
+                      placeholder="e.g. 25000"
                       className={inputClass}
                     />
                   </div>
@@ -494,12 +536,11 @@ export default function AddJobsPage() {
                       name="maxSalary"
                       value={formData.maxSalary}
                       onChange={(e) => {
-                        e.target.setCustomValidity('');
-
-                        handleInputChange(e);
+                        e.target.setCustomValidity("")
+                        handleInputChange(e)
                       }}
                       min="0"
-                      placeholder="e.g. 40"
+                      placeholder="e.g. 40000"
                       className={inputClass}
                     />
                   </div>
@@ -523,7 +564,7 @@ export default function AddJobsPage() {
 
                       <ChevronDown
                         size={17}
-                        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-slate-400"
                       />
                     </div>
                   </div>
@@ -556,7 +597,8 @@ export default function AddJobsPage() {
               {/* Responsibilities */}
               <div>
                 <label className={labelClass}>
-                  Key Responsibilities <span className="text-rose-500">*</span>
+                  Key Responsibilities{" "}
+                  <span className="text-rose-500">*</span>
                 </label>
 
                 <textarea
@@ -566,7 +608,7 @@ export default function AddJobsPage() {
                   required
                   rows={5}
                   placeholder="Describe the main responsibilities of this position..."
-                  className="w-full resize-y rounded-xl border border-slate-200 bg-white p-4 text-sm leading-7 text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full resize-y rounded-xl border border-slate-200 bg-white p-4 text-sm leading-7 text-slate-800 transition-all outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
                 />
 
                 <p className="mt-2 text-[11px] text-slate-400">
@@ -577,7 +619,7 @@ export default function AddJobsPage() {
               {/* Qualifications */}
               <div>
                 <label className={labelClass}>
-                  Qualifications & Requirements{' '}
+                  Qualifications & Requirements{" "}
                   <span className="text-rose-500">*</span>
                 </label>
 
@@ -588,7 +630,7 @@ export default function AddJobsPage() {
                   required
                   rows={5}
                   placeholder="List required skills, experience, education and qualifications..."
-                  className="w-full resize-y rounded-xl border border-slate-200 bg-white p-4 text-sm leading-7 text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full resize-y rounded-xl border border-slate-200 bg-white p-4 text-sm leading-7 text-slate-800 transition-all outline-none placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
                 />
 
                 <p className="mt-2 text-[11px] text-slate-400">
@@ -637,17 +679,17 @@ export default function AddJobsPage() {
                 {/* Publish Job */}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl"
                 >
                   <Send size={16} />
-                  {isSubmitting ? 'Publishing...' : 'Publish Job'}
+                  Publish Job
                   <ArrowRight size={16} />
                 </button>
               </div>
             </div>
           </motion.div>
 
+          {/* Footer */}
           <p className="pb-4 text-center text-[11px] text-slate-400">
             © {new Date().getFullYear()} HireLoop Network. All rights reserved.
           </p>
@@ -655,5 +697,5 @@ export default function AddJobsPage() {
         </form>
       </div>
     </div>
-  );
+  )
 }
