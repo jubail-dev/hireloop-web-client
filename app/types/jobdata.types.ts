@@ -1,4 +1,5 @@
 export type JobDataType = {
+  _id: string
   title: string
   company: string
   category: string

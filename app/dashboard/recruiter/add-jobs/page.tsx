@@ -104,6 +104,7 @@ export default function AddJobsPage() {
   const router = useRouter()
 
   const initialFormData = {
+    _id: "",
     title: "",
     company: "",
     category: "",
