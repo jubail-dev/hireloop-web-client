@@ -3,6 +3,8 @@
 
 import React, { useState } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Building2,
   MapPin,
@@ -99,7 +101,8 @@ const SectionHeading = ({
 }
 
 export default function AddJobsPage() {
-  // Initial Form Data
+  const router = useRouter()
+
   const initialFormData = {
     title: "",
     company: "",
@@ -116,6 +119,7 @@ export default function AddJobsPage() {
   }
 
   const [formData, setFormData] = useState(initialFormData)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Handle Input Change
   const handleInputChange = (
@@ -132,24 +136,18 @@ export default function AddJobsPage() {
   }
 
   // Handle Form Submit
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault()
+
+    if (isSubmitting) return
 
     const form = e.currentTarget
 
     // Validate Employment Type
     if (!formData.jobType) {
-      const jobTypeInput =
-        form.querySelector<HTMLInputElement>(
-          'input[name="jobType"]'
-        )
-
-      jobTypeInput?.setCustomValidity(
-        "Please select an employment type."
-      )
-
-      jobTypeInput?.reportValidity()
-
+      toast.error("Please select an employment type.")
       return
     }
 
@@ -159,44 +157,62 @@ export default function AddJobsPage() {
       formData.maxSalary &&
       Number(formData.minSalary) > Number(formData.maxSalary)
     ) {
-      const maxSalaryInput =
-        form.querySelector<HTMLInputElement>(
-          'input[name="maxSalary"]'
-        )
-
-      maxSalaryInput?.setCustomValidity(
+      toast.error(
         "Maximum salary must be greater than or equal to minimum salary."
       )
-
-      maxSalaryInput?.reportValidity()
-
       return
     }
 
-    // Prepare Job Data
-    const jobData : JobDataType = {
-      ...formData,
-      minSalary: formData.minSalary
-        ? Number(formData.minSalary)
-        : null,
-      maxSalary: formData.maxSalary
-        ? Number(formData.maxSalary)
-        : null,
+    setIsSubmitting(true)
+
+    try {
+      // Prepare Job Data
+      const jobData: JobDataType = {
+        ...formData,
+        minSalary: formData.minSalary
+          ? Number(formData.minSalary)
+          : null,
+        maxSalary: formData.maxSalary
+          ? Number(formData.maxSalary)
+          : null,
+      }
+
+      // Create Job
+      const result = await createJob(jobData)
+
+      console.log("Create Job Result:", result)
+
+      // Check API Response
+      if (!result || result.acknowledged !== true) {
+        toast.error(
+          result?.message || "Failed to publish job. Please try again."
+        )
+        return
+      }
+
+      // Success Toast
+      toast.success("Job published successfully!")
+
+      // Redirect to Manage Jobs
+      router.push("/dashboard/recruiter/manage-jobs")
+
+    } catch (error) {
+      console.error("Create Job Error:", error)
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      )
+    } finally {
+      setIsSubmitting(false)
     }
-
-    // Show Data in Console
-    console.log("Job Data:", jobData)
-
-    const result = await createJob(jobData)
-
-    console.log(result);
-
-
   }
 
   // Clear Form
   const handleClearForm = () => {
     setFormData(initialFormData)
+    toast.info("Form cleared successfully.")
   }
 
   return (
@@ -347,12 +363,7 @@ export default function AddJobsPage() {
                       key={type}
                       type="button"
                       aria-pressed={formData.jobType === type}
-                      onClick={(e) => {
-                        const input =
-                          e.currentTarget.parentElement?.nextElementSibling as HTMLInputElement | null
-
-                        input?.setCustomValidity("")
-
+                      onClick={() => {
                         setFormData((prev) => ({
                           ...prev,
                           jobType: type,
@@ -368,16 +379,6 @@ export default function AddJobsPage() {
                     </button>
                   ))}
                 </div>
-
-                <input
-                  type="text"
-                  name="jobType"
-                  value={formData.jobType}
-                  readOnly
-                  tabIndex={-1}
-                  aria-label="Employment type"
-                  className="absolute h-px w-px opacity-0"
-                />
               </div>
             </div>
           </motion.section>
@@ -535,10 +536,7 @@ export default function AddJobsPage() {
                       type="number"
                       name="maxSalary"
                       value={formData.maxSalary}
-                      onChange={(e) => {
-                        e.target.setCustomValidity("")
-                        handleInputChange(e)
-                      }}
+                      onChange={handleInputChange}
                       min="0"
                       placeholder="e.g. 40000"
                       className={inputClass}
@@ -671,7 +669,8 @@ export default function AddJobsPage() {
                 <button
                   type="button"
                   onClick={handleClearForm}
-                  className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                  disabled={isSubmitting}
+                  className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Clear Form
                 </button>
@@ -679,11 +678,12 @@ export default function AddJobsPage() {
                 {/* Publish Job */}
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                 >
                   <Send size={16} />
-                  Publish Job
-                  <ArrowRight size={16} />
+                  {isSubmitting ? "Publishing..." : "Publish Job"}
+                  {!isSubmitting && <ArrowRight size={16} />}
                 </button>
               </div>
             </div>
