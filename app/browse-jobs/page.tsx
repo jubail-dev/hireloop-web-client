@@ -1,29 +1,25 @@
+import BrowseJobs from "@/components/browse-jobs/BrowseJobs"
+import { getJobs } from "@/lib/api/jobs"
 
-import { getJobs } from '@/lib/api/jobs';
-import { JobDataType } from '../types/jobdata.types';
+const BrowseJobsPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) => {
+  const params = await searchParams
+  const query = new URLSearchParams()
 
-const BrowsJobsPage = async ({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
-    const search = await searchParams;
-    const urlSearch = new URLSearchParams(search as Record<string, string>).toString();
-    const query = urlSearch.toString();
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === "string") {
+      query.set(key, value)
+    } else if (Array.isArray(value)) {
+      value.forEach((item) => query.append(key, item))
+    }
+  }
 
-    console.log("query", query);
+  const jobs = await getJobs(query.toString())
 
-    const jobs = await getJobs(query);
+  return <BrowseJobs jobs={jobs} />
+}
 
-    return (
-        <div>
-            <h1>Browse Jobs</h1>
-            <ul>
-                {jobs.map((job: JobDataType) => (
-                    <li key={job._id}>
-                        <h2>{job.title}</h2>
-    
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-};
-
-export default BrowsJobsPage;
+export default BrowseJobsPage

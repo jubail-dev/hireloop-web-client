@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import { JobDataType } from "@/app/types/jobdata.types"
 import { createJob } from "@/lib/actions/jobs"
+import { JOB_TYPES } from "@/lib/job-options"
 
 const categories = [
   "Engineering & Technology",
@@ -44,14 +45,6 @@ const categories = [
   "Healthcare",
   "Content Writing",
   "Other",
-]
-
-const jobTypes = [
-  "Full-time",
-  "Part-time",
-  "Contract",
-  "Internship",
-  "Freelance",
 ]
 
 const inputClass =
@@ -359,7 +352,7 @@ export default function AddJobsPage() {
                 </label>
 
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-                  {jobTypes.map((type) => (
+                  {JOB_TYPES.map((type) => (
                     <button
                       key={type}
                       type="button"
