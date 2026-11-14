@@ -11,6 +11,7 @@ import {
   Bookmark, 
   ExternalLink 
 } from "lucide-react"
+import ApplyNowButton from "../components/ApplyNowButton"
 
 type JobDetailsPageProps = {
   params: Promise<{
@@ -62,12 +63,7 @@ const JobDetailsPage = async ({ params }: JobDetailsPageProps) => {
                 <Bookmark className="h-5 w-5" />
               </button>
               
-              <button
-                type="button"
-                className="flex-1 sm:flex-none rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500"
-              >
-                Apply Now
-              </button>
+              <ApplyNowButton job={job}></ApplyNowButton>
             </div>
           </div>
         </section>

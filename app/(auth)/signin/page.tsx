@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import React, { useState } from "react"
 import Link from "next/link"
@@ -24,6 +24,10 @@ import {
 import { signIn } from "@/lib/auth-client"
 
 const SignInPage = () => {
+
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirectTo") ?? "/"
+
   const router = useRouter()
 
   const [showPassword, setShowPassword] = useState(false)
@@ -54,7 +58,7 @@ const SignInPage = () => {
     if (data) {
       toast.success("Sign in successful!")
 
-      router.push("/")
+      router.push(redirectTo)
       router.refresh()
     }
   } catch (error) {
